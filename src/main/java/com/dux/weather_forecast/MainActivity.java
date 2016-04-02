@@ -8,10 +8,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,20 +58,31 @@ public class MainActivity extends AppCompatActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
-        public PlaceholderFragment() {
-        }
-
+        @Bind(R.id.listview_forecast)ListView listView;
+        ArrayAdapter<String> adapter;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            ButterKnife.bind(this, rootView);
             String[] forecastData = {
                     "Test",
                     "Test2",
                     "Test3"
             };
-            List<String> forecastList = new ArrayList<String>(Arrays.asList(forecastData));
+            List<String> forecastList = new ArrayList<>(Arrays.asList(forecastData));
+            adapter = new ArrayAdapter<>(
+                    getActivity(),
+                    R.layout.list_item_forecast,
+                    R.id.listview_forecast_textview,
+                    forecastList);
+            listView.setAdapter(adapter);
             return rootView;
+        }
+
+        @Override public void onDestroyView() {
+            super.onDestroyView();
+            ButterKnife.unbind(this);
         }
     }
 }
