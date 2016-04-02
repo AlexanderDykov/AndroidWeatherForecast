@@ -1,10 +1,15 @@
 package com.dux.weather_forecast;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -30,6 +35,13 @@ public class ForecastFragment  extends Fragment {
 
     @Bind(R.id.listview_forecast)ListView listView;
     ArrayAdapter<String> adapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,30 +62,51 @@ public class ForecastFragment  extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.forecastfragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.action_refresh){
+            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+            fetchWeatherTask.execute("94043");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
 
-    public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
+    public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
 
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Void doInBackground(String... params) {
 
-            // These two need to be declared outside the try/catch
-            // so that they can be closed in the finally block.
+            if(params.length == 0)
+                return null;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-            // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
 
             try {
-                // Construct the URL for the OpenWeatherMap query
-                // Possible parameters are avaiable at OWM's forecast API page, at
-                // http://openweathermap.org/API#forecast
-                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7");
+
+                Uri builtUri = Uri.parse(Constants.FORECAST_BASE_URL).buildUpon()
+                        .appendQueryParameter(Constants.QUERY_PARAM, params[0])
+                        .appendQueryParameter(Constants.FORMAT_PARAM, "json")
+                        .appendQueryParameter(Constants.UNITS_PARAM, "metric")
+                        .appendQueryParameter(Constants.DAYS_PARAM, Integer.toString(7))
+                        .appendQueryParameter(Constants.APPID_PARAM, Constants.OPEN_WEATHER_MAP_API_KEY)
+                        .build();
+
+                URL url = new URL(builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
