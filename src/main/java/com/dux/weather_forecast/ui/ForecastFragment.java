@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +21,8 @@ import com.dux.weather_forecast.BuildConfig;
 import com.dux.weather_forecast.R;
 import com.dux.weather_forecast.api.service.WeatherService;
 import com.dux.weather_forecast.model.WeatherResponse;
+import com.dux.weather_forecast.model.WeatherViewModel;
+import com.dux.weather_forecast.ui.adapter.WeatherListAdapter;
 import com.dux.weather_forecast.utils.Constants;
 
 import java.io.BufferedReader;
@@ -42,9 +46,8 @@ import rx.schedulers.Schedulers;
  */
 public class ForecastFragment  extends Fragment {
 
-    @Bind(R.id.listview_forecast)ListView listView;
-    ArrayAdapter<String> adapter;
     WeatherService weatherService;
+    @Bind(R.id.listview_forecast)RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +61,22 @@ public class ForecastFragment  extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, rootView);
         weatherService = new WeatherService();
-
+        ArrayList<WeatherViewModel> weatherViewModels = new ArrayList<>();
+        WeatherViewModel weatherViewModel = new WeatherViewModel();
+        weatherViewModel.setType(0);
+        weatherViewModels.add(weatherViewModel);
+        weatherViewModel = new WeatherViewModel();
+        weatherViewModel.setType(1);
+        weatherViewModels.add(weatherViewModel);
+        weatherViewModel = new WeatherViewModel();
+        weatherViewModel.setType(1);
+        weatherViewModels.add(weatherViewModel);
+        weatherViewModel = new WeatherViewModel();
+        weatherViewModel.setType(1);
+        weatherViewModels.add(weatherViewModel);
+        WeatherListAdapter weatherListAdapter = new WeatherListAdapter(this.getContext(),weatherViewModels);
+        recyclerView.setAdapter(weatherListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         return rootView;
     }
 
