@@ -16,6 +16,8 @@ import rx.Observable;
 public class WeatherService extends ApiManager implements ApiService, WeatherRepository {
 
     WeatherApi weatherApi;
+    public final String units = "metric";
+    public final String mode = "json";
 
     public WeatherService() {
         super(Constants.FORECAST_BASE_URL);
@@ -29,6 +31,6 @@ public class WeatherService extends ApiManager implements ApiService, WeatherRep
 
     @Override
     public Observable<WeatherResponse> getWeather(String city) {
-        return weatherApi.getWeather(BuildConfig.WEATHER_API_KEY, city);
+        return weatherApi.getWeather(BuildConfig.WEATHER_API_KEY, city,units,mode);
     }
 }

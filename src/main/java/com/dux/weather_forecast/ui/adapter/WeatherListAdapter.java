@@ -5,16 +5,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.dux.weather_forecast.R;
 import com.dux.weather_forecast.model.WeatherViewModel;
+import com.dux.weather_forecast.utils.Utility;
 
 import java.util.ArrayList;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by DUX on 02.04.2016.
  */
-public class WeatherListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.ViewHolder> {
 
 
     private static final int VIEW_TYPE_TODAY = 0;
@@ -29,38 +35,46 @@ public class WeatherListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        return list.get(position).getType();
+        return (position == 0) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        int layoutId;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        int layoutId = -1;
         switch (viewType) {
             case VIEW_TYPE_TODAY: {
                 layoutId = R.layout.list_item_forecast_today;
-                View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
-                return new ViewHolderToday(view);
+                break;
             }
-            default:
             case VIEW_TYPE_FUTURE_DAY: {
                 layoutId = R.layout.list_item_forecast;
-                View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
-                return new ViewHolderFutureDay(view);
+                break;
             }
-
         }
+
+        View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder,final int position) {
+    public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
+        WeatherViewModel weatherViewModel = list.get(position);
         switch (getItemViewType(position)) {
             case VIEW_TYPE_TODAY:
-                ViewHolderToday viewHolderFirst = (ViewHolderToday)holder;
+                viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(
+                        weatherViewModel.getCondition()));
                 break;
             case VIEW_TYPE_FUTURE_DAY:
-                ViewHolderFutureDay viewHolderSecond = (ViewHolderFutureDay)holder;
+                viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(
+                        weatherViewModel.getCondition()));
                 break;
         }
+        viewHolder.dateView.setText(Utility.getFriendlyDayString(context, weatherViewModel.getDateTime()));
+        String description = weatherViewModel.getDescription();
+        viewHolder.descriptionView.setText(description);
+        viewHolder.iconView.setContentDescription(description);
+        viewHolder.highTempView.setText(Utility.formatTemperature(context, weatherViewModel.getHigh()));
+        viewHolder.lowTempView.setText(Utility.formatTemperature(context, weatherViewModel.getLow()));
     }
 
     @Override
@@ -68,18 +82,22 @@ public class WeatherListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return list.size();
     }
 
-    public class ViewHolderToday extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolderToday(View itemView) {
-            super(itemView);
-        }
+        @Bind(R.id.list_item_icon)
+        public ImageView iconView;
+        @Bind(R.id.list_item_date_textview)
+        public TextView dateView;
+        @Bind(R.id.list_item_forecast_textview)
+        public TextView descriptionView;
+        @Bind(R.id.list_item_high_textview)
+        public TextView highTempView;
+        @Bind(R.id.list_item_low_textview)
+        public TextView lowTempView;
 
-    }
-
-    public class ViewHolderFutureDay extends RecyclerView.ViewHolder{
-
-        public ViewHolderFutureDay(View itemView) {
-            super(itemView);
+        public ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
         }
 
     }

@@ -11,5 +11,5 @@ import rx.Observable;
  */
 public interface WeatherApi {
     @GET("data/2.5/forecast/daily")
-    Observable<WeatherResponse> getWeather(@Query("appid") String key, @Query("q") String cityName);
+    Observable<WeatherResponse> getWeather(@Query("appid") String key, @Query("q") String cityName, @Query("units") String units, @Query("mode") String mode);
 }
