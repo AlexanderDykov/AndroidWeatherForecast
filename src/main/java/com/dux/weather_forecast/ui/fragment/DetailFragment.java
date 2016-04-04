@@ -1,4 +1,4 @@
-package com.dux.weather_forecast.ui;
+package com.dux.weather_forecast.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

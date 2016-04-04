@@ -1,4 +1,4 @@
-package com.dux.weather_forecast.model;
+package com.dux.weather_forecast.model.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

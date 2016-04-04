@@ -12,8 +12,7 @@
     </style>
 
     <!-- Settings activity theme. -->
-    <style name="SettingsTheme" parent="AppTheme">
-    </style>
+    <style name="SettingsTheme" parent="AppTheme"></style>
 
     <!-- main activity action bar styles -->
     <style name="ActionBar.Solid.Sunshine.NoTitle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
@@ -25,6 +24,18 @@
     <style name="ForecastListStyle">
         <!-- Here it's a stub.  In screens of sufficient width, this style includes modifications
         for two-pane layout -->
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 
 </resources>

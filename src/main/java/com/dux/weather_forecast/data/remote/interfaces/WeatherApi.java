@@ -1,6 +1,6 @@
-package com.dux.weather_forecast.api.interfaces;
+package com.dux.weather_forecast.data.remote.interfaces;
 
-import com.dux.weather_forecast.model.WeatherResponse;
+import com.dux.weather_forecast.model.response.WeatherResponse;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;

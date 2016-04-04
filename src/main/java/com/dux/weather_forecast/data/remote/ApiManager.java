@@ -1,4 +1,4 @@
-package com.dux.weather_forecast.api;
+package com.dux.weather_forecast.data.remote;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,21 +12,33 @@ import retrofit2.Retrofit;
  */
 public class ApiManager  {
 
+    private final int CONNECT_TIMEOUT = 15;
+    private final int WRITE_TIMEOUT = 60;
+    private final int TIMEOUT = 60;
+
+    private OkHttpClient okHttpClient;
     private Retrofit retrofit;
     private final String API_ENDPOINT;
-
+    private OkHttpClient.Builder okHttpClientBuilder;
     public ApiManager(String baseUrl){
 
         this.API_ENDPOINT = baseUrl;
-        this.retrofit = getRetrofit();
+        this.okHttpClientBuilder = new OkHttpClient.Builder()
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(TIMEOUT, TimeUnit.SECONDS);
+
+        this.okHttpClient = this.okHttpClientBuilder.build();
+        this.retrofit = getRetrofit(okHttpClient);
 
     }
 
-    private Retrofit getRetrofit(){
+    private Retrofit getRetrofit(OkHttpClient client){
         return new Retrofit.Builder()
                 .baseUrl(this.API_ENDPOINT)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(client)
                 .build();
     }
 

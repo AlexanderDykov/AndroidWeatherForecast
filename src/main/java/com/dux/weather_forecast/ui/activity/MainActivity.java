@@ -1,13 +1,13 @@
-package com.dux.weather_forecast.ui;
+package com.dux.weather_forecast.ui.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.dux.weather_forecast.R;
-import com.dux.weather_forecast.ui.ForecastFragment;
+import com.dux.weather_forecast.ui.fragment.ForecastFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,9 +15,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_forecast, new ForecastFragment())
-                .commit();
+        ForecastFragment forecastFragment =  ((ForecastFragment)getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_forecast));
     }
 
     @Override

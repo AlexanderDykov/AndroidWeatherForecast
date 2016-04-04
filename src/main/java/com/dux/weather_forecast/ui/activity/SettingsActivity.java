@@ -1,4 +1,4 @@
-package com.dux.weather_forecast.ui;
+package com.dux.weather_forecast.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

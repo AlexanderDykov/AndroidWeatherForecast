@@ -1,4 +1,4 @@
-package com.dux.weather_forecast.ui;
+package com.dux.weather_forecast.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.dux.weather_forecast.R;
+import com.dux.weather_forecast.ui.fragment.DetailFragment;
 
 /**
  * Created by DUX on 02.04.2016.
