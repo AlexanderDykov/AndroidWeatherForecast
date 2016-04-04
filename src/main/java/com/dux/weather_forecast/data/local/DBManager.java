@@ -17,6 +17,9 @@ import rx.Observable;
  * Created by DUX on 04.04.2016.
  */
 public class DBManager implements WeatherRepository {
+
+    //TODO: get data by city name. leave only 7 records in db (delete another)
+
     SQLiteDatabase db;
 
     public DBManager(Context context) {
@@ -42,7 +45,7 @@ public class DBManager implements WeatherRepository {
         }
     }
 
-    public ArrayList<WeatherViewModel> getData() {
+    private ArrayList<WeatherViewModel> getData(String city) {
         Cursor cursor = db.query(WeatherEntry.TABLE_NAME, null, null, null, null, null, null);
         ArrayList<WeatherViewModel> list = new ArrayList<>();
         if (cursor.moveToFirst()) {
@@ -82,6 +85,6 @@ public class DBManager implements WeatherRepository {
 
     @Override
     public Observable<ArrayList<WeatherViewModel>> getWeather(String city) {
-        return Observable.just(getData());
+        return Observable.just(getData(city));
     }
 }

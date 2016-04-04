@@ -32,7 +32,7 @@ import rx.schedulers.Schedulers;
  * Created by DUX on 02.04.2016.
  */
 public class ForecastFragment extends Fragment {
-
+    
     WeatherService weatherService;
     @Bind(R.id.listview_forecast)
     RecyclerView recyclerView;
