@@ -14,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dux.weather_forecast.R;
-import com.dux.weather_forecast.data.local.DBManager;
-import com.dux.weather_forecast.data.remote.service.WeatherService;
+import com.dux.weather_forecast.data.local.CacheService;
+import com.dux.weather_forecast.data.remote.service.ApiService;
+import com.dux.weather_forecast.model.ResponseType;
 import com.dux.weather_forecast.model.WeatherViewModel;
+import com.dux.weather_forecast.presenter.ForecastPresenter;
 import com.dux.weather_forecast.ui.adapter.WeatherListAdapter;
+import com.dux.weather_forecast.view.ForecastView;
 
 import java.util.ArrayList;
 
@@ -31,14 +34,14 @@ import rx.schedulers.Schedulers;
 /**
  * Created by DUX on 02.04.2016.
  */
-public class ForecastFragment extends Fragment {
-    
-    WeatherService weatherService;
+public class ForecastFragment extends Fragment  implements ForecastView {
+
     @Bind(R.id.listview_forecast)
     RecyclerView recyclerView;
     WeatherListAdapter weatherListAdapter;
     Context context;
-    DBManager dbManager;
+    ArrayList<WeatherViewModel> list;
+    ForecastPresenter presenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,9 +59,9 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, rootView);
-        weatherService = new WeatherService();
         context = this.getActivity();
-        dbManager = new DBManager(context);
+        presenter = new ForecastPresenter(context,this);
+        presenter.loadData();
         return rootView;
     }
 
@@ -66,25 +69,7 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            //TODO: get city from prefs
-            dbManager.getWeather("Zhytomyr").subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<ArrayList<WeatherViewModel>>() {
-                        @Override
-                        public void call(ArrayList<WeatherViewModel> weatherViewModels) {
-                            weatherListAdapter = new WeatherListAdapter(context, weatherViewModels);
-                            recyclerView.setAdapter(weatherListAdapter);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        }
-                    })
-                    .onErrorReturn(new Func1<Throwable, ArrayList<WeatherViewModel>>() {
-                        @Override
-                        public ArrayList<WeatherViewModel> call(Throwable throwable) {
-                            return null;
-                        }
-                    })
-                    .subscribe();
-
+            presenter.refreshData();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -96,4 +81,17 @@ public class ForecastFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
+    @Override
+    public void onLoad(ArrayList<WeatherViewModel> weatherViewModels) {
+        list = weatherViewModels;
+        weatherListAdapter = new WeatherListAdapter(context, list);
+        recyclerView.setAdapter(weatherListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+    }
+
+    @Override
+    public void onRefresh(ArrayList<WeatherViewModel> weatherViewModels) {
+        list = weatherViewModels;
+        weatherListAdapter.notifyItemRangeChanged(0 , list.size());
+    }
 }

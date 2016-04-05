@@ -6,6 +6,7 @@ import com.dux.weather_forecast.BuildConfig;
 import com.dux.weather_forecast.data.remote.ApiManager;
 import com.dux.weather_forecast.data.remote.interfaces.WeatherApi;
 import com.dux.weather_forecast.data.WeatherRepository;
+import com.dux.weather_forecast.model.ResponseType;
 import com.dux.weather_forecast.model.WeatherViewModel;
 import com.dux.weather_forecast.model.response.Main;
 import com.dux.weather_forecast.model.response.Temp;
@@ -21,13 +22,13 @@ import rx.functions.Func1;
 /**
  * Created by DUX on 02.04.2016.
  */
-public class WeatherService extends ApiManager implements  WeatherRepository {
+public class ApiService extends ApiManager implements  WeatherRepository {
 
     WeatherApi weatherApi;
     public final String units = "metric";
     public final String mode = "json";
 
-    public WeatherService() {
+    public ApiService() {
         super(Constants.FORECAST_BASE_URL);
         this.weatherApi = getApiInterface(WeatherApi.class);
     }
@@ -52,6 +53,7 @@ public class WeatherService extends ApiManager implements  WeatherRepository {
         dayTime = new Time();
         for (int i = 0; i < response.getList().size(); i++) {
             WeatherViewModel weatherViewModel = new WeatherViewModel();
+            weatherViewModel.setResponseType(ResponseType.REMOTE);
             weatherViewModel.setLocation(response.getCity().getName());
             Main dayForecast = response.getList().get(i);
             weatherViewModel.setDateTime(dayTime.setJulianDay(julianStartDay + i));

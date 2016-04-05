@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.dux.weather_forecast.data.WeatherRepository;
+import com.dux.weather_forecast.model.ResponseType;
 import com.dux.weather_forecast.model.WeatherViewModel;
 
 import java.util.ArrayList;
@@ -16,19 +17,19 @@ import rx.Observable;
 /**
  * Created by DUX on 04.04.2016.
  */
-public class DBManager implements WeatherRepository {
+public class CacheService implements WeatherRepository {
 
-    //TODO: get data by city name. leave only 7 records in db (delete another)
-
+    //TODO: get data by city name
     SQLiteDatabase db;
 
-    public DBManager(Context context) {
+    public CacheService(Context context) {
         WeatherDbHelper helper = new WeatherDbHelper(context);
         db = helper.getWritableDatabase();
 
     }
 
-    public void insertData(ArrayList<WeatherViewModel> list) {
+    public void updateData(ArrayList<WeatherViewModel> list) {
+        deleteData();
         for (int i = 0; i < list.size(); i++) {
             WeatherViewModel weatherViewModel = list.get(i);
             ContentValues weatherValues = new ContentValues();
@@ -61,6 +62,7 @@ public class DBManager implements WeatherRepository {
 
             do {
                 WeatherViewModel weatherViewModel = new WeatherViewModel();
+                weatherViewModel.setResponseType(ResponseType.LOCAL);
                 weatherViewModel.setLocation(cursor.getString(locationIndex));
                 weatherViewModel.setDescription(cursor.getString(descIndex));
                 weatherViewModel.setCondition(cursor.getInt(condIndex));

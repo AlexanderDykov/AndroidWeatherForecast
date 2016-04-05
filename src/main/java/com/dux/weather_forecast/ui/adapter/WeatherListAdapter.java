@@ -56,25 +56,30 @@ public class WeatherListAdapter extends RecyclerView.Adapter<WeatherListAdapter.
         return new ViewHolder(view);
     }
 
+    public static <T> T checkNull(T obj, T defaultValue) {
+        if (null == obj) return defaultValue;
+        return obj;
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         WeatherViewModel weatherViewModel = list.get(position);
         switch (getItemViewType(position)) {
             case VIEW_TYPE_TODAY:
                 viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(
-                        weatherViewModel.getCondition()));
+                        checkNull(weatherViewModel.getCondition(),0)));
                 break;
             case VIEW_TYPE_FUTURE_DAY:
                 viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(
-                        weatherViewModel.getCondition()));
+                        checkNull(weatherViewModel.getCondition(),0)));
                 break;
         }
-        viewHolder.dateView.setText(Utility.getFriendlyDayString(context, weatherViewModel.getDateTime()));
-        String description = weatherViewModel.getDescription();
+        viewHolder.dateView.setText(Utility.getFriendlyDayString(context,checkNull(weatherViewModel.getDateTime(), 0L)));
+        String description = checkNull(weatherViewModel.getDescription(),"");
         viewHolder.descriptionView.setText(description);
         viewHolder.iconView.setContentDescription(description);
-        viewHolder.highTempView.setText(Utility.formatTemperature(context, weatherViewModel.getHigh()));
-        viewHolder.lowTempView.setText(Utility.formatTemperature(context, weatherViewModel.getLow()));
+        viewHolder.highTempView.setText(Utility.formatTemperature(context, checkNull(weatherViewModel.getHigh(),0D)));
+        viewHolder.lowTempView.setText(Utility.formatTemperature(context, checkNull(weatherViewModel.getLow(),0D)));
     }
 
     @Override
