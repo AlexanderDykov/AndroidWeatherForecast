@@ -4,7 +4,6 @@ package com.dux.weather_forecast.model;
  * Created by DUX on 02.04.2016.
  */
 public class WeatherViewModel {
-    private ResponseType responseType;
     private String location;
     private Integer condition;
     private Long dateInMillis;
@@ -16,14 +15,6 @@ public class WeatherViewModel {
     private Integer humidity;
     private Double windSpeed;
     private Double windDirection;
-
-    public ResponseType getResponseType() {
-        return responseType;
-    }
-
-    public void setResponseType(ResponseType responseType) {
-        this.responseType = responseType;
-    }
 
     public String getLocation() {
         return location;

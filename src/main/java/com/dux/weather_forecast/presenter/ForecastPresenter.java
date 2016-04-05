@@ -34,7 +34,6 @@ public class ForecastPresenter {
         //TODO: get city from prefs
         return apiService.getWeather("Zhytomyr")
                 .startWith(cacheService.getWeather(""))
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -42,9 +41,8 @@ public class ForecastPresenter {
         load().doOnNext(new Action1<ArrayList<WeatherViewModel>>() {
             @Override
             public void call(ArrayList<WeatherViewModel> weatherViewModels) {
-                if (weatherViewModels.get(0).getResponseType().equals(ResponseType.REMOTE)) {
+                if(!weatherViewModels.get(0).getDateTime().equals(cacheService.getFirstDate()))
                     cacheService.updateData(weatherViewModels);
-                }
                 view.onLoad(weatherViewModels);
             }
         })
@@ -61,7 +59,8 @@ public class ForecastPresenter {
         load().doOnNext(new Action1<ArrayList<WeatherViewModel>>() {
             @Override
             public void call(ArrayList<WeatherViewModel> weatherViewModels) {
-                cacheService.updateData(weatherViewModels);
+                if(!weatherViewModels.get(0).getDateTime().equals(cacheService.getFirstDate()))
+                    cacheService.updateData(weatherViewModels);
                 view.onRefresh(weatherViewModels);
             }
         })

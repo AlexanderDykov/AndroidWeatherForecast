@@ -13,6 +13,7 @@ import com.dux.weather_forecast.model.WeatherViewModel;
 import java.util.ArrayList;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by DUX on 04.04.2016.
@@ -46,6 +47,16 @@ public class CacheService implements WeatherRepository {
         }
     }
 
+
+    public Long getFirstDate(){
+        Cursor cursor = db.query(WeatherEntry.TABLE_NAME, null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            int dateIndex = cursor.getColumnIndex(WeatherEntry.COLUMN_DATE);
+            return cursor.getLong(dateIndex);
+        }
+        return null;
+    }
+
     private ArrayList<WeatherViewModel> getData(String city) {
         Cursor cursor = db.query(WeatherEntry.TABLE_NAME, null, null, null, null, null, null);
         ArrayList<WeatherViewModel> list = new ArrayList<>();
@@ -62,7 +73,6 @@ public class CacheService implements WeatherRepository {
 
             do {
                 WeatherViewModel weatherViewModel = new WeatherViewModel();
-                weatherViewModel.setResponseType(ResponseType.LOCAL);
                 weatherViewModel.setLocation(cursor.getString(locationIndex));
                 weatherViewModel.setDescription(cursor.getString(descIndex));
                 weatherViewModel.setCondition(cursor.getInt(condIndex));
@@ -87,6 +97,7 @@ public class CacheService implements WeatherRepository {
 
     @Override
     public Observable<ArrayList<WeatherViewModel>> getWeather(String city) {
-        return Observable.just(getData(city));
+        return Observable.just(getData(city))
+                .subscribeOn(Schedulers.computation());
     }
 }

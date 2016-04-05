@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by DUX on 02.04.2016.
@@ -42,7 +43,8 @@ public class ApiService extends ApiManager implements  WeatherRepository {
                     public ArrayList<WeatherViewModel> call(WeatherResponse weatherResponse) {
                         return weatherResponse != null ? parseResponse(weatherResponse): null;
                     }
-                });
+                })
+                .subscribeOn(Schedulers.io());
     }
 
     private ArrayList<WeatherViewModel> parseResponse(WeatherResponse response) {
@@ -53,7 +55,6 @@ public class ApiService extends ApiManager implements  WeatherRepository {
         dayTime = new Time();
         for (int i = 0; i < response.getList().size(); i++) {
             WeatherViewModel weatherViewModel = new WeatherViewModel();
-            weatherViewModel.setResponseType(ResponseType.REMOTE);
             weatherViewModel.setLocation(response.getCity().getName());
             Main dayForecast = response.getList().get(i);
             weatherViewModel.setDateTime(dayTime.setJulianDay(julianStartDay + i));
