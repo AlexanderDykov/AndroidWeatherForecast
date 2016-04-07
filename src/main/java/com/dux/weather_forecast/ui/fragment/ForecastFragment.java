@@ -54,6 +54,8 @@ public class ForecastFragment extends Fragment implements ForecastView {
         ButterKnife.bind(this, rootView);
         context = this.getActivity();
         presenter = new ForecastPresenter(context, this);
+        list = new ArrayList<>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         presenter.loadData();
         return rootView;
     }
@@ -75,17 +77,10 @@ public class ForecastFragment extends Fragment implements ForecastView {
     }
 
     @Override
-    public void onLoad(ArrayList<WeatherViewModel> weatherViewModels) {
+    public void updateList(ArrayList<WeatherViewModel> weatherViewModels) {
         list = weatherViewModels;
         weatherListAdapter = new WeatherListAdapter(context, list);
         recyclerView.setAdapter(weatherListAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-    }
-
-    @Override
-    public void onRefresh(ArrayList<WeatherViewModel> weatherViewModels) {
-        list = weatherViewModels;
-        weatherListAdapter.notifyItemRangeChanged(0, list.size());
     }
 
     @Override

@@ -41,7 +41,7 @@ public class ForecastPresenter {
                 Observable.mergeDelayError(
                         Observable.just(apiService.getWeather(cityName))
                                 .startWith(cacheService.getWeather(cityName))
-                        )
+                )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<ArrayList<WeatherViewModel>>() {
@@ -50,7 +50,7 @@ public class ForecastPresenter {
                                 if (!weatherViewModels.isEmpty()) {
                                     if (!weatherViewModels.get(0).getDateTime().equals(cacheService.getFirstDate()))
                                         cacheService.updateData(weatherViewModels);
-                                    view.onLoad(weatherViewModels);
+                                    view.updateList(weatherViewModels);
                                 }
                             }
                         })
@@ -74,7 +74,7 @@ public class ForecastPresenter {
                                 if (!weatherViewModels.isEmpty()) {
                                     if (!weatherViewModels.get(0).getDateTime().equals(cacheService.getFirstDate()))
                                         cacheService.updateData(weatherViewModels);
-                                    view.onRefresh(weatherViewModels);
+                                    view.updateList(weatherViewModels);
                                 }
                             }
                         })
