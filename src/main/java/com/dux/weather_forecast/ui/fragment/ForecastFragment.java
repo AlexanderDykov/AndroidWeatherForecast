@@ -87,4 +87,10 @@ public class ForecastFragment extends Fragment implements ForecastView {
         list = weatherViewModels;
         weatherListAdapter.notifyItemRangeChanged(0, list.size());
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        presenter.destroy();
+    }
 }
