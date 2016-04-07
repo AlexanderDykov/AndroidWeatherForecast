@@ -14,9 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dux.weather_forecast.R;
-import com.dux.weather_forecast.data.local.CacheService;
-import com.dux.weather_forecast.data.remote.service.ApiService;
-import com.dux.weather_forecast.model.ResponseType;
 import com.dux.weather_forecast.model.WeatherViewModel;
 import com.dux.weather_forecast.presenter.ForecastPresenter;
 import com.dux.weather_forecast.ui.adapter.WeatherListAdapter;
@@ -26,15 +23,11 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by DUX on 02.04.2016.
  */
-public class ForecastFragment extends Fragment  implements ForecastView {
+public class ForecastFragment extends Fragment implements ForecastView {
 
     @Bind(R.id.listview_forecast)
     RecyclerView recyclerView;
@@ -60,7 +53,7 @@ public class ForecastFragment extends Fragment  implements ForecastView {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, rootView);
         context = this.getActivity();
-        presenter = new ForecastPresenter(context,this);
+        presenter = new ForecastPresenter(context, this);
         presenter.loadData();
         return rootView;
     }
@@ -92,6 +85,6 @@ public class ForecastFragment extends Fragment  implements ForecastView {
     @Override
     public void onRefresh(ArrayList<WeatherViewModel> weatherViewModels) {
         list = weatherViewModels;
-        weatherListAdapter.notifyItemRangeChanged(0 , list.size());
+        weatherListAdapter.notifyItemRangeChanged(0, list.size());
     }
 }

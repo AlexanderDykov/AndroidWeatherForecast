@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.dux.weather_forecast.data.WeatherRepository;
-import com.dux.weather_forecast.model.ResponseType;
 import com.dux.weather_forecast.model.WeatherViewModel;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class CacheService implements WeatherRepository {
             int dateIndex = cursor.getColumnIndex(WeatherEntry.COLUMN_DATE);
             return cursor.getLong(dateIndex);
         }
-        return null;
+        return -1L;
     }
 
     private ArrayList<WeatherViewModel> getData(String city) {
@@ -97,7 +96,6 @@ public class CacheService implements WeatherRepository {
 
     @Override
     public Observable<ArrayList<WeatherViewModel>> getWeather(String city) {
-        return Observable.just(getData(city))
-                .subscribeOn(Schedulers.computation());
+        return Observable.just(getData(city));
     }
 }

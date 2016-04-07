@@ -6,7 +6,6 @@ import com.dux.weather_forecast.BuildConfig;
 import com.dux.weather_forecast.data.remote.ApiManager;
 import com.dux.weather_forecast.data.remote.interfaces.WeatherApi;
 import com.dux.weather_forecast.data.WeatherRepository;
-import com.dux.weather_forecast.model.ResponseType;
 import com.dux.weather_forecast.model.WeatherViewModel;
 import com.dux.weather_forecast.model.response.Main;
 import com.dux.weather_forecast.model.response.Temp;
@@ -43,8 +42,7 @@ public class ApiService extends ApiManager implements  WeatherRepository {
                     public ArrayList<WeatherViewModel> call(WeatherResponse weatherResponse) {
                         return weatherResponse != null ? parseResponse(weatherResponse): null;
                     }
-                })
-                .subscribeOn(Schedulers.io());
+                });
     }
 
     private ArrayList<WeatherViewModel> parseResponse(WeatherResponse response) {
